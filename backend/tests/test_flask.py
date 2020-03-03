@@ -3,6 +3,7 @@ import unittest
 
 from backend.app import app
 
+
 class BasicTests(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
