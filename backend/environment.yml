@@ -1,0 +1,8 @@
+name: ImageViewer
+channels:
+  - defaults
+  - cprescher
+dependencies:
+  - flask
+  - fabio
+  - pytest
