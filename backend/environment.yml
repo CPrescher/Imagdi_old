@@ -1,4 +1,4 @@
-name: ImageViewer
+name: ImageDi
 channels:
   - defaults
   - cprescher
