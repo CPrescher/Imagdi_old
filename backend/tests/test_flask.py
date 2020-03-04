@@ -10,5 +10,5 @@ class BasicTests(unittest.TestCase):
         self.app = app.test_client()
 
     def test_load_image(self):
-        response = self.app.post('/load_image', data=dict(filename='blubg'))
+        response = self.app.post('/load', data=dict(filename='blubg'))
         print(response)
