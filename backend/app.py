@@ -6,16 +6,27 @@ from flask import request
 import numpy as np
 import fabio
 
+from .util.FileIteration import get_next_file, get_previous_file
+
 app = flask.Flask(__name__)
 
 
-class ImgBrowser():
+class ImgBrowser:
     def __init__(self):
         self._filename = ''
+        self._fabio = None
         self.img_data = None
 
     def load_image(self, filename):
-        self.img_data = fabio.open(filename).data
+        self._filename = filename
+        self._fabio = fabio.open(filename)
+        self.img_data = self._fabio.data
+
+    def next(self):
+        if self._filename == '':
+            return
+        next_file_name = get_next_file(self._filename)
+        self.load_image(next_file_name)
 
     @property
     def byte_img(self):
@@ -31,4 +42,10 @@ browser = ImgBrowser()
 def load_image():
     filename = request.form.get('filename')
     browser.load_image(filename)
+    return browser.byte_img
+
+
+@app.route('/next', methods=['POST'])
+def next_file():
+    browser.next()
     return browser.byte_img
