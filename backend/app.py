@@ -28,6 +28,12 @@ class ImgBrowser:
         next_file_name = get_next_file(self._filename)
         self.load_image(next_file_name)
 
+    def previous(self):
+        if self._filename == '':
+            return
+        previous_file_name = get_previous_file(self._filename)
+        self.load_image(previous_file_name)
+
     @property
     def byte_img(self):
         bytestream = io.BytesIO()
@@ -48,4 +54,10 @@ def load_image():
 @app.route('/next', methods=['POST'])
 def next_file():
     browser.next()
+    return browser.byte_img
+
+
+@app.route('/previous', methods=['POST'])
+def previous_file():
+    browser.previous()
     return browser.byte_img

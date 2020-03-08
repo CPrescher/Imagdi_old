@@ -67,3 +67,18 @@ class BasicTests(unittest.TestCase):
         received_img = np.load(io.BytesIO(response.data))
         self.assertTrue(np.allclose(received_img, img_arrays[1]))
         self.assertEqual(img_arrays[1].shape, received_img.shape)
+
+    def test_load_previous_image(self):
+        img_arrays = [np.random.random((5, 5)) for _ in range(3)]
+        file_names = create_random_tiff_file_series(img_arrays)
+
+        # load third image
+        response = self.app.post('/load', data=dict(filename=file_names[2]))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.app.post('/previous')
+        self.assertEqual(response.status_code, 200)
+
+        received_img = np.load(io.BytesIO(response.data))
+        self.assertTrue(np.allclose(received_img, img_arrays[1]))
+        self.assertEqual(img_arrays[1].shape, received_img.shape)
