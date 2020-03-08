@@ -82,3 +82,15 @@ class BasicTests(unittest.TestCase):
         received_img = np.load(io.BytesIO(response.data))
         self.assertTrue(np.allclose(received_img, img_arrays[1]))
         self.assertEqual(img_arrays[1].shape, received_img.shape)
+
+    def test_get_filename(self):
+        temp_file = create_temp_tiff(np.random.random((5, 5)))
+
+        response = self.app.post('/load', data=dict(filename=temp_file.name))
+        self.assertEqual(response.status_code, 200)
+
+        response = self.app.get('/filename')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.decode(), str(temp_file.name))
+
+

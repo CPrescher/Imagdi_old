@@ -13,25 +13,25 @@ app = flask.Flask(__name__)
 
 class ImgBrowser:
     def __init__(self):
-        self._filename = ''
+        self._file_name = ''
         self._fabio = None
         self.img_data = None
 
-    def load_image(self, filename):
-        self._filename = filename
-        self._fabio = fabio.open(filename)
+    def load_image(self, file_name):
+        self._file_name = file_name
+        self._fabio = fabio.open(file_name)
         self.img_data = self._fabio.data
 
     def next(self):
-        if self._filename == '':
+        if self._file_name == '':
             return
-        next_file_name = get_next_file(self._filename)
+        next_file_name = get_next_file(self._file_name)
         self.load_image(next_file_name)
 
     def previous(self):
-        if self._filename == '':
+        if self._file_name == '':
             return
-        previous_file_name = get_previous_file(self._filename)
+        previous_file_name = get_previous_file(self._file_name)
         self.load_image(previous_file_name)
 
     @property
@@ -39,6 +39,10 @@ class ImgBrowser:
         bytestream = io.BytesIO()
         np.save(bytestream, self.img_data)
         return bytestream.getvalue()
+
+    @property
+    def file_name(self):
+        return self._file_name
 
 
 browser = ImgBrowser()
@@ -61,3 +65,8 @@ def next_file():
 def previous_file():
     browser.previous()
     return browser.byte_img
+
+
+@app.route('/filename')
+def file_name():
+    return browser.file_name
