@@ -74,3 +74,10 @@ def previous_file():
 @app.route('/filename')
 def file_name():
     return browser.file_name
+
+
+@app.route('/random', methods=['POST'])
+def random():
+    x_dim = int(request.form.get('x_dim'))
+    y_dim = int(request.form.get('y_dim'))
+    return convert_array_to_bytes(np.random.random((x_dim, y_dim)))

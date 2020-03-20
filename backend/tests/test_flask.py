@@ -88,6 +88,15 @@ class BasicTests(unittest.TestCase):
         self.assertTrue(np.allclose(received_img, img_arrays[1]))
         self.assertEqual(img_arrays[1].shape, received_img.shape)
 
+    def test_get_random_array(self):
+        x_dim = 1024
+        y_dim = 1024
+        response = self.app.post('/random', data=dict(x_dim=1024, y_dim=1024))
+        self.assertEqual(response.status_code, 200)
+
+        received_img = np.load(io.BytesIO(response.data))
+        self.assertTrue(received_img.shape, (x_dim, y_dim))
+
     def test_get_filename(self):
         temp_file = create_temp_tiff(np.random.random((5, 5)))
 
@@ -97,5 +106,3 @@ class BasicTests(unittest.TestCase):
         response = self.app.get('/filename')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.decode(), str(temp_file.name))
-
-
