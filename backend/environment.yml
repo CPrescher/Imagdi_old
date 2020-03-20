@@ -6,3 +6,6 @@ dependencies:
   - flask
   - fabio
   - pytest
+  - pillow
+  - pylint
+  - rope

@@ -3,6 +3,7 @@ import shutil
 import io
 import unittest
 import tempfile
+from pathlib import Path
 
 from PIL import Image
 import numpy as np
@@ -11,9 +12,13 @@ from backend.app import app
 
 
 def create_temp_tiff(img_data):
-    temp_file = tempfile.NamedTemporaryFile("wb", suffix=".tiff")
+    temp_file_dir = Path(tempfile.gettempdir(), "imagdi")
+    temp_file_dir.mkdir(exist_ok=True)
+    temp_file_path = Path(temp_file_dir.absolute(), os.urandom(24).hex() + '.tiff')
+    temp_file = open(temp_file_path, "wb")
     im = Image.fromarray(img_data)
     im.save(temp_file)
+    temp_file.close()
     return temp_file
 
 
@@ -23,9 +28,9 @@ def save_tiff(img_data, filename):
         im.save(f)
 
 
-def create_random_tiff_file_series(img_arrays):
-    temp_directory_path = os.path.join(tempfile.gettempdir(), 'imagdi')
-    os.mkdir(temp_directory_path)
+def create_tiff_file_series(img_arrays):
+    temp_directory_path = Path(tempfile.gettempdir(), 'imagdi')
+    temp_directory_path.mkdir(exist_ok=True)
     file_names = []
     for ind, img_array in enumerate(img_arrays):
         file_name = os.path.join(temp_directory_path, 'series_{:03d}.tiff'.format(ind + 1))
@@ -40,7 +45,7 @@ class BasicTests(unittest.TestCase):
         self.app = app.test_client()
 
     def tearDown(self):
-        shutil.rmtree(os.path.join(tempfile.gettempdir(), 'imagdi'), ignore_errors=True)
+        shutil.rmtree(Path(tempfile.gettempdir(), 'imagdi'), ignore_errors=True)
 
     def test_load_image(self):
         rand_img = np.random.random((5, 5))
@@ -55,7 +60,7 @@ class BasicTests(unittest.TestCase):
 
     def test_load_next_image(self):
         img_arrays = [np.random.random((5, 5)) for _ in range(10)]
-        file_names = create_random_tiff_file_series(img_arrays)
+        file_names = create_tiff_file_series(img_arrays)
 
         # load first image
         response = self.app.post('/load', data=dict(filename=file_names[0]))
@@ -70,7 +75,7 @@ class BasicTests(unittest.TestCase):
 
     def test_load_previous_image(self):
         img_arrays = [np.random.random((5, 5)) for _ in range(3)]
-        file_names = create_random_tiff_file_series(img_arrays)
+        file_names = create_tiff_file_series(img_arrays)
 
         # load third image
         response = self.app.post('/load', data=dict(filename=file_names[2]))

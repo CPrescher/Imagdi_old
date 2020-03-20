@@ -36,9 +36,7 @@ class ImgBrowser:
 
     @property
     def byte_img(self):
-        bytestream = io.BytesIO()
-        np.save(bytestream, self.img_data)
-        return bytestream.getvalue()
+        return convert_array_to_bytes(self.img_data)
 
     @property
     def file_name(self):
@@ -46,6 +44,12 @@ class ImgBrowser:
 
 
 browser = ImgBrowser()
+
+
+def convert_array_to_bytes(numpy_array):
+    bytestream = io.BytesIO()
+    np.save(bytestream, numpy_array)
+    return bytestream.getvalue()
 
 
 @app.route('/load', methods=['POST'])
