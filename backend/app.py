@@ -1,4 +1,5 @@
 import io
+from copy import deepcopy
 
 import flask
 from flask import request
@@ -7,6 +8,7 @@ import numpy as np
 import fabio
 
 from .util.FileIteration import get_next_file, get_previous_file
+from .util.math import gaussian_2d
 
 app = flask.Flask(__name__)
 
@@ -81,3 +83,26 @@ def random():
     x_dim = int(request.form.get('x_dim'))
     y_dim = int(request.form.get('y_dim'))
     return convert_array_to_bytes(np.random.random((x_dim, y_dim)))
+
+
+@app.route('/gaussian', methods=['POST'])
+def gaussian():
+    default_param = dict(
+        x_dim=1024,
+        y_dim=1024,
+        center_x=512,
+        center_y=512,
+        fwhm_x=100,
+        fwhm_y=100,
+        amplitude=1000,
+        theta=0,
+    )
+    post_param = request.form
+    param = default_param
+
+    for key in default_param.keys():
+        if key in post_param.keys():
+            param[key] = float(post_param[key])
+
+    gaussian = gaussian_2d(**param)
+    return convert_array_to_bytes(gaussian)

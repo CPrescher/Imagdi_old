@@ -97,6 +97,22 @@ class BasicTests(unittest.TestCase):
         received_img = np.load(io.BytesIO(response.data))
         self.assertTrue(received_img.shape, (x_dim, y_dim))
 
+    def test_get_gaussian_array(self):
+        response = self.app.post('/gaussian', data=dict(
+            center_x=348,
+            center_y=458,
+            amplitude=100,
+            fwhm_x=30,
+            fwhm_y=20,
+            x_dim=1024,
+            y_dim=1024
+        ))
+        self.assertEqual(response.status_code, 200)
+
+        received_img = np.load(io.BytesIO(response.data))
+        self.assertEqual(received_img.shape, (1024, 1024))
+        self.assertEqual(np.max(received_img), 100)
+
     def test_get_filename(self):
         temp_file = create_temp_tiff(np.random.random((5, 5)))
 
