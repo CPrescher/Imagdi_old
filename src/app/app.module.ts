@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -11,6 +12,8 @@ import { PlotComponent } from './plot/plot.component';
 import { MaterialsModule } from './materials.module';
 import { KaraboBridgeComponent } from './karabo-bridge/karabo-bridge.component';
 
+import { PlotlyViaWindowModule } from 'angular-plotly.js';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,15 +21,18 @@ import { KaraboBridgeComponent } from './karabo-bridge/karabo-bridge.component';
     FileComponent,
     KaraboDataComponent,
     PlotComponent,
-    KaraboBridgeComponent
+    KaraboBridgeComponent,
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialsModule
+    MaterialsModule,
+    PlotlyViaWindowModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
