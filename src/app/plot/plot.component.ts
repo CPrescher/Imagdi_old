@@ -6,15 +6,27 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./plot.component.scss']
 })
 export class PlotComponent implements OnInit {
-  public graph = {
-    data: [
-      { x: [1, 2, 3], y: [2, 6, 3], type: 'scatter', mode: 'lines+points', marker: {color: 'red'} },
-      { x: [1, 2, 3], y: [2, 5, 3], type: 'bar' },
-    ],
-    layout: {width: 320, height: 240, title: 'A Fancy Plot'}
-  };
+  public plotRevision = 0;
 
-  constructor() { }
+  public graph = {
+    data:
+      [
+        {x: [1, 2, 3], y: [2, 6, 3], type: 'scatter', mode: 'lines+points', marker: {color: 'red'}},
+        {x: [1, 2, 3], y: [2, 5, 3], type: 'bar'},
+      ],
+    layout:
+      {
+        autosize: true, fillFrame: false, frameMargins: 0.1, title: 'A Fancy Plot'
+      },
+    config:
+      {
+        responsive: true,
+      }
+  }
+
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
